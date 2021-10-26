@@ -15,6 +15,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useAuth0, User } from '@auth0/auth0-react';
+import { Avatar, ImageList, ImageListItem } from '@mui/material';
 
 interface IHeaderProps {
     isAuthenticated: boolean;
@@ -64,7 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);   
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const { loginWithRedirect, logout } = useAuth0();
 
@@ -89,6 +90,9 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const menuItemArr = [ <MenuItem onClick={handleMenuClose} key={1}>Profile</MenuItem>,
+	<MenuItem onClick={() => logout({ returnTo: window.location.origin })} key={2}>Logout</MenuItem>];
+
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -107,11 +111,12 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-        {isAuthenticated ? 
-            <>
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>Logout</MenuItem>
-            </>
+        {isAuthenticated ?
+			menuItemArr.map(menuItem => {
+				return menuItem;
+			})
+            // <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            // <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>Logout</MenuItem>
 
      :     <MenuItem onClick={loginWithRedirect}>Login</MenuItem>}
     </Menu>
@@ -123,7 +128,7 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
         vertical: 'top',
-        horizontal: 'right',
+		horizontal: 'right',
       }}
       id={mobileMenuId}
       keepMounted
@@ -162,7 +167,9 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+        {
+			isAuthenticated ? <Avatar alt="User" src={user?.picture}/>  : <AccountCircle /> 
+		}
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -171,13 +178,13 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" >
+      <AppBar>
         <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component="h1"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: 'none', sm: 'block' }, fontFamily: 'Zen Tokyo Zoo' }}
           >
             G.S.
           </Typography>
@@ -186,8 +193,9 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search games…"
-              inputProps={{ 'aria-label': 'search' }}
+				placeholder="Search games…"
+				inputProps={{ 'aria-label': 'search' }}
+				fullWidth={true}
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
@@ -197,9 +205,9 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
                 component="h2"
                 sx={{ display: { xs: 'none', sm: 'block' } }}
             >
-                {user ? user.name : 'Hello, anon'}
+                {user ?  `Hello, ${user.name} :3` : 'Hello, anon :3'}
             </Typography>
-          
+
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -210,8 +218,10 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
-            </IconButton>
+				{
+					isAuthenticated ? <Avatar alt="UserPic" src={user?.picture}/>  : <AccountCircle /> 
+				}            
+			</IconButton>
           </Box>
         </Toolbar>
       </AppBar>

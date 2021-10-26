@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Preferences from './components/Preferences/Preferences';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './components/Header/Header.component';
+import SideBar from './components/SideBar/SideBar.component';
 
 const API_KEY = '345c6ea8a03b4a83903196d5d87e51de';
 
@@ -40,6 +41,7 @@ function App(): JSX.Element {
 		</Switch>
 		</BrowserRouter>
 		<Header user={user} isAuthenticated={isAuthenticated}></Header>
+		<SideBar/>
 	</div>
 	);
 }
