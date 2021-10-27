@@ -13,11 +13,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import { useAuth0, User } from '@auth0/auth0-react';
-import { Avatar, ImageList, ImageListItem } from '@mui/material';
+import { Avatar } from '@mui/material';
 
-interface IHeaderProps {
+export interface IHeaderProps {
     isAuthenticated: boolean;
     user?: User
 }
@@ -86,9 +85,6 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
 
   const menuItemArr = [ <MenuItem onClick={handleMenuClose} key={1}>Profile</MenuItem>,
 	<MenuItem onClick={() => logout({ returnTo: window.location.origin })} key={2}>Logout</MenuItem>];
@@ -115,9 +111,6 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
 			menuItemArr.map(menuItem => {
 				return menuItem;
 			})
-            // <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            // <MenuItem onClick={() => logout({ returnTo: window.location.origin })}>Logout</MenuItem>
-
      :     <MenuItem onClick={loginWithRedirect}>Login</MenuItem>}
     </Menu>
   );
@@ -178,13 +171,13 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar>
-        <Toolbar>
+      <AppBar sx={{ boxShadow:"none"}}>
+        <Toolbar >
           <Typography
             variant="h6"
             noWrap
             component="h1"
-            sx={{ display: { xs: 'none', sm: 'block' }, fontFamily: 'Zen Tokyo Zoo' }}
+            sx={{ display: { xs: 'none', sm: 'block' }, fontFamily: 'Zen Tokyo Zoo', }}
           >
             G.S.
           </Typography>

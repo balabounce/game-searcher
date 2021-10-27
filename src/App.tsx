@@ -6,12 +6,10 @@ import Preferences from './components/Preferences/Preferences';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './components/Header/Header.component';
 import SideBar from './components/SideBar/SideBar.component';
+import { CircularProgress, LinearProgress } from '@mui/material';
 
 const API_KEY = '345c6ea8a03b4a83903196d5d87e51de';
 
-interface IGames {
-	results: JSON
-}
 function App(): JSX.Element {
 	// const [token, setToken] = useState();
 	const { user, isAuthenticated, isLoading } = useAuth0();
@@ -27,6 +25,18 @@ function App(): JSX.Element {
 		}
 		);
 	}, []);
+
+	if(isLoading) {
+		return <CircularProgress size={70} color="secondary" sx={{
+			position: 'absolute',
+			margin: '0 auto',
+			top: '50%',
+			left: '50%',
+			marginLeft: '-0.625em',
+			transform: 'translateX(-50%)'
+		}} />;
+	}
+
 
 	return (
 	<div className='container'>
