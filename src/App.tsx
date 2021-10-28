@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import Dashboard from './components/Dashboard/Dashboard';
-import Preferences from './components/Preferences/Preferences';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './components/Header/Header.component';
 import SideBar from './components/SideBar/SideBar.component';
-import { CircularProgress, LinearProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
+import GamesList from './components/GamesList/GamesList.component';
 
 const API_KEY = '345c6ea8a03b4a83903196d5d87e51de';
 
-function App(): JSX.Element {
+function App() {
 	// const [token, setToken] = useState();
 	const { user, isAuthenticated, isLoading } = useAuth0();
 	useEffect(() => {
-		fetch(`https://api.rawg.io/api/games?key=${API_KEY}`)
+		fetch(`https://api.rawg.io/api/games/3498/movies?key=${API_KEY}`)
 		.then(res => res.json())
 		.then(
 		(result) => {
@@ -43,15 +42,17 @@ function App(): JSX.Element {
 		<BrowserRouter>
 		<Switch>
 			<Route path='/dashboard'>
-				<Dashboard/>
+				{/* <Dashboard/> */}
 			</Route>
 			<Route path='/preferences'>
-				<Preferences/>
+				{/* <Preferences/> */}
 			</Route>
 		</Switch>
 		</BrowserRouter>
 		<Header user={user} isAuthenticated={isAuthenticated}></Header>
 		<SideBar/>
+		<GamesList/>
+
 	</div>
 	);
 }

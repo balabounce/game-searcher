@@ -13,7 +13,13 @@ const theme = createTheme({
 		}, 
 		secondary: {
 			main: '#fff'
-		}
+		},
+	},
+	typography: {
+		fontFamily:[
+			'Azeret Mono',
+			'sans-serif'
+		].join(','),
 	}
 });
 

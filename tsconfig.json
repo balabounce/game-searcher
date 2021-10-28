@@ -19,10 +19,12 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true
   },
   "include": [
-    "next-env.d.ts",
+    "react-app-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ],

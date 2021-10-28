@@ -25,13 +25,12 @@ export interface IHeaderProps {
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  backgroundColor: alpha(theme.palette.common.white, 0.65),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
+    backgroundColor: alpha(theme.palette.common.white, 0.95),
   },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
   width: '100%',
+  color: 'black',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(3),
     width: '80%',
@@ -55,9 +54,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
-    width: '100%',
+    width: '150%',
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '100%',
     },
   },
 }));
@@ -106,6 +105,7 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
+      sx={{marginTop:'60px'}}
     >
         {isAuthenticated ?
 			menuItemArr.map(menuItem => {
@@ -171,8 +171,8 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar sx={{ boxShadow:"none"}}>
-        <Toolbar >
+      <AppBar sx={{ boxShadow:"none", paddingTop: '20px', paddingLeft: '20px', paddingRight: '20px'}}>
+        <Toolbar  className='toolbar' sx={{paddingLeft: '20px !important'}}>
           <Typography
             variant="h6"
             noWrap
@@ -196,9 +196,9 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
                 variant="h6"
                 noWrap
                 component="h2"
-                sx={{ display: { xs: 'none', sm: 'block' } }}
+                sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '18px', marginRight: '10px' }}
             >
-                {user ?  `Hello, ${user.name} :3` : 'Hello, anon :3'}
+                {user ?  `${user.name}` : 'Hello, anon :3'}
             </Typography>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

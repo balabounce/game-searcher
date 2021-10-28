@@ -1,0 +1,22 @@
+.card {
+    background-color: rgb(7, 59, 75) !important;
+    color: white !important;
+    margin: 20px;
+    p {
+        color: white;
+    }
+    .icon {
+        color: white;
+        &__clicked {
+            color: red;
+        }
+    }
+}
+
+.container {
+    display: flex;
+    padding: 20px;
+    padding-top: 60px;
+    width: fit-content;
+}
+

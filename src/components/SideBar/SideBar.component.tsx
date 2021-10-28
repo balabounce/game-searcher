@@ -1,12 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
-import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -21,6 +18,8 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import { Link } from '@mui/material';
+import './SideBar.styles.scss';
+
 
 const drawerWidth = 240;
 
@@ -32,22 +31,22 @@ const SideBar: React.FC = () => {
 		if(section === 'newrelease'){
 			switch(i) {
 				case 0:
-					return <StarIcon color='secondary' sx={{minWidth: minW}}/>;
+					return <StarIcon color='secondary' sx={{minWidth: minW}} className='icon'/>;
 				case 1:
-					return <WhatshotIcon  color='secondary' sx={{minWidth:minW}}/>;
+					return <WhatshotIcon  color='secondary' sx={{minWidth:minW}} className='icon'/>;
 				case 2: 
-					return <FastRewindIcon  color='secondary' sx={{transform: 'rotate(180deg)', minWidth:minW}}/>;
+					return <FastRewindIcon  color='secondary' sx={{transform: 'rotate(180deg)', minWidth:minW}} className='icon'/>;
 				case 3:
-					return <CalendarTodayIcon  color='secondary' sx={{minWidth:minW}}/>;
+					return <CalendarTodayIcon  color='secondary' sx={{minWidth:minW}} className='icon'/>;
 			}
 		} else if(section === 'top') {
 			switch(i) {
 				case 0:
-					return <EmojiEventsIcon  color='secondary' sx={{minWidth:minW}}/>;
+					return <EmojiEventsIcon  color='secondary' sx={{minWidth:minW}} className='icon'/>;
 				case 1:
-					return <EqualizerIcon  color='secondary' sx={{minWidth:minW}}/>;
+					return <EqualizerIcon  color='secondary' sx={{minWidth:minW}} className='icon'/>;
 				case 2: 
-					return <LocalActivityIcon  color='secondary' sx={{minWidth:minW}}/>;
+					return <LocalActivityIcon  color='secondary' sx={{minWidth:minW}} className='icon'/>;
 			}
 		}
 		return <></>;
@@ -65,7 +64,9 @@ const SideBar: React.FC = () => {
 				backgroundColor: 'rgb(5, 52, 66)',
 				color: '#fff',
 				border: 'none',
-				overflow: 'hidden'
+				overflow: 'hidden',
+				paddingLeft: '20px',
+				paddingTop: '40px'
 			},
 			zIndex: 1000,
         }}
@@ -74,10 +75,11 @@ const SideBar: React.FC = () => {
       >
         <Toolbar />
 		<Link href={window.location.origin} underline="none">
-        <Typography ml={2} mt={1} variant="h4" component="h3" sx={{
-			transition: 'color .5s',
+        <Typography ml={2} mt={1} mb={2} variant="h5" component="h3" sx={{
+			transition: 'filter .3s',
+			color: 'white',
 			'&:hover': {
-				color: 'white'
+				filter: 'brightness(50%)'
 			}
 		}}>
           Home
@@ -91,11 +93,11 @@ const SideBar: React.FC = () => {
 				</Typography>
 				<List>
 					{['Cart', 'Wishlist'].map((text, index) => (
-						<ListItem button key={text}>
-						<ListItemIcon>
-							{index % 2 === 0 ? <ShoppingBasketIcon  color='secondary' sx={{minWidth:minW}}/> : <CardGiftcardIcon  color='secondary' sx={{minWidth:minW}}/>}
-						</ListItemIcon>
-						<ListItemText primary={text} />
+						<ListItem button key={text} className='listitem'>
+							<ListItemIcon>
+								{index % 2 === 0 ? <ShoppingBasketIcon className='icon'  color='secondary' sx={{minWidth:minW}}/> : <CardGiftcardIcon className='icon'  color='secondary' sx={{minWidth:minW}}/>}
+							</ListItemIcon>
+							<ListItemText primary={text} />
 						</ListItem>
 					))}
 				</List> 
@@ -110,13 +112,13 @@ const SideBar: React.FC = () => {
 
         <List>
           {['Last 30 days', 'This week', 'Next week', 'Release calendar'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {
-					renderSwitchIcon('newrelease', index)
-				} 
-              </ListItemIcon>
-              <ListItemText primary={text} />
+            <ListItem button key={text} className='listitem'>
+				<ListItemIcon>
+					{
+						renderSwitchIcon('newrelease', index)
+					} 
+				</ListItemIcon>
+				<ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
@@ -128,7 +130,7 @@ const SideBar: React.FC = () => {
 		
         <List>
           {['Best of the year', 'Popular in 2021', 'All time top 250'].map((text, index) => (
-            <ListItem button key={text}>
+            <ListItem button key={text} className='listitem'>
               <ListItemIcon>
                 {
 					renderSwitchIcon('top', index)

@@ -1,0 +1,10 @@
+$itemColor: #35D2AB;
+
+.listitem {
+    &:hover {
+        color: $itemColor !important;
+        .icon {
+            color: $itemColor !important;
+        }
+    }
+}
