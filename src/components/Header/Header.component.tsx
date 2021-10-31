@@ -13,14 +13,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useAuth0, User } from '@auth0/auth0-react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar } from '@mui/material';
-
-export interface IHeaderProps {
-    isAuthenticated: boolean;
-    user?: User
-}
-
+import  userLocalCheck  from '../../functions/userLocalCheck';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -61,13 +56,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) => {
+const PrimarySearchAppBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
-
+  
+  // const { user, isAuthenticated, isLoading} = useAuth0();
+	const user =  userLocalCheck();
   const { loginWithRedirect, logout } = useAuth0();
 
-  if(isAuthenticated) console.log(user);
+  // if(isAuthenticated) console.log(user);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -84,9 +81,16 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
     handleMobileMenuClose();
   };
 
+  // const handleLogout = () => {
+
+  // }
+
 
   const menuItemArr = [ <MenuItem onClick={handleMenuClose} key={1}>Profile</MenuItem>,
-	<MenuItem onClick={() => logout({ returnTo: window.location.origin })} key={2}>Logout</MenuItem>];
+	<MenuItem onClick={() => {
+    localStorage.removeItem('user');
+    logout({ returnTo: window.location.origin });
+  }} key={2}>Logout</MenuItem>];
 
 
   const menuId = 'primary-search-account-menu';
@@ -107,7 +111,7 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
       onClose={handleMenuClose}
       sx={{marginTop:'60px'}}
     >
-        {isAuthenticated ?
+        {user ?
 			menuItemArr.map(menuItem => {
 				return menuItem;
 			})
@@ -161,8 +165,8 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
           color="inherit"
         >
         {
-			isAuthenticated ? <Avatar alt="User" src={user?.picture}/>  : <AccountCircle /> 
-		}
+          user ? <Avatar alt="User" src={user?.picture}/>  : <AccountCircle /> 
+        }
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -212,7 +216,7 @@ const PrimarySearchAppBar: React.FC<IHeaderProps> = ({user, isAuthenticated}) =>
               color="inherit"
             >
 				{
-					isAuthenticated ? <Avatar alt="UserPic" src={user?.picture}/>  : <AccountCircle /> 
+					user ? <Avatar alt="UserPic" src={user?.picture}/>  : <AccountCircle /> 
 				}            
 			</IconButton>
           </Box>

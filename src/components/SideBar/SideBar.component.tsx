@@ -18,15 +18,17 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import { Link } from '@mui/material';
+import userLocalCheck from '../../functions/userLocalCheck';
 import './SideBar.styles.scss';
+import { Router } from 'react-router';
 
 
 const drawerWidth = 240;
 
 const SideBar: React.FC = () => {
-	const { user, isAuthenticated } = useAuth0();
 	const minW = '42px';
-
+	const user = userLocalCheck();
+	// const {user, isAuthenticated, isLoading} = useAuth0();
 	const renderSwitchIcon = (section: string, i: number): JSX.Element => {
 		if(section === 'newrelease'){
 			switch(i) {
@@ -86,19 +88,21 @@ const SideBar: React.FC = () => {
         </Typography>
 		</Link>
 
-		{isAuthenticated ?  
+		{user ?  
 			<>
 				<Typography ml={2} mt={1} variant="h5" component="h3">
 					{user?.name}
 				</Typography>
 				<List>
 					{['Cart', 'Wishlist'].map((text, index) => (
-						<ListItem button key={text} className='listitem'>
-							<ListItemIcon>
-								{index % 2 === 0 ? <ShoppingBasketIcon className='icon'  color='secondary' sx={{minWidth:minW}}/> : <CardGiftcardIcon className='icon'  color='secondary' sx={{minWidth:minW}}/>}
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItem>
+						<Link href={`/discover/${text.toLowerCase().replace(/ /g, '-')}`} color='secondary' sx={{textDecoration: 'none'}} key={index}>
+							<ListItem button key={text} className='listitem'>
+								<ListItemIcon>
+									{index % 2 === 0 ? <ShoppingBasketIcon className='icon'  color='secondary' sx={{minWidth:minW}}/> : <CardGiftcardIcon className='icon'  color='secondary' sx={{minWidth:minW}}/>}
+								</ListItemIcon>
+								<ListItemText primary={text} />
+							</ListItem>
+						</Link>
 					))}
 				</List> 
 			</>
@@ -112,14 +116,21 @@ const SideBar: React.FC = () => {
 
         <List>
           {['Last 30 days', 'This week', 'Next week', 'Release calendar'].map((text, index) => (
-            <ListItem button key={text} className='listitem'>
-				<ListItemIcon>
-					{
-						renderSwitchIcon('newrelease', index)
-					} 
-				</ListItemIcon>
-				<ListItemText primary={text} />
-            </ListItem>
+				<Link 
+					href={`/discover/${text.toLowerCase().replace(/ /g, '-')}`} 
+					color='secondary' 
+					sx={{textDecoration: 'none'}} 
+					key={index}
+					>
+					<ListItem button key={text} className='listitem'>
+						<ListItemIcon>
+							{
+								renderSwitchIcon('newrelease', index)
+							} 
+						</ListItemIcon>
+						<ListItemText primary={text} />
+					</ListItem>
+				</Link>
           ))}
         </List>
 
@@ -130,14 +141,17 @@ const SideBar: React.FC = () => {
 		
         <List>
           {['Best of the year', 'Popular in 2021', 'All time top 250'].map((text, index) => (
-            <ListItem button key={text} className='listitem'>
-              <ListItemIcon>
-                {
-					renderSwitchIcon('top', index)
-				}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
+			<Link href={`/discover/${text.toLowerCase().replace(/ /g, '-')}`} color='secondary' sx={{textDecoration: 'none'}} key={index}>
+				<ListItem button key={text} className='listitem'>
+					<ListItemIcon>
+						{
+							renderSwitchIcon('top', index)
+						}
+					</ListItemIcon>
+					<ListItemText primary={text} />
+				</ListItem>
+			</Link>
+
           ))}
         </List>
       </Drawer>

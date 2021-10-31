@@ -2,21 +2,29 @@
     background-color: rgb(7, 59, 75) !important;
     color: white !important;
     margin: 20px;
+    padding: 0px !important;
     p {
         color: white;
     }
-    .icon {
+    .icon_button {
         color: white;
+        padding-left: 0px;
         &__clicked {
             color: red;
         }
     }
+    .icon_platform {
+        width: 15px;
+        height: 15px;
+        margin-right: 9px;
+        margin-bottom: 9px;
+    }
 }
 
-.container {
-    display: flex;
-    padding: 20px;
-    padding-top: 60px;
+.gameslist-container {
+    margin-top: 100px;
+    margin-left: 250px !important;
+    padding-left: 0px !important;
     width: fit-content;
 }
 
