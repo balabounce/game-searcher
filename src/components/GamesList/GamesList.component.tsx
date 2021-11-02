@@ -8,15 +8,15 @@ import { faWindows, faPlaystation, faXbox, faApple, faLinux } from "@fortawesome
 
 interface GamesListProps {
     titleGamesList: string,
-    getAllGames?: (page: number, setGames:  React.Dispatch<React.SetStateAction<never[]>>) => void;
+    getGames?: (page: number, setGames:  React.Dispatch<React.SetStateAction<never[]>>) => void;
 }
 
 
-const GamesList: React.FC<GamesListProps> = ({titleGamesList, getAllGames}) => {
+const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
     const [page, setPage] = useState(1);
     const [games, setGames] = useState([]);
     useEffect(() => {
-        const result = getAllGames ? getAllGames(page, setGames) : null;
+        const result = getGames ? getGames(page, setGames) : null;
     }, [page]);
 
     console.log(games);
@@ -29,7 +29,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getAllGames}) => {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     games.map((game: any) => {
                         return (
-                            <Card sx={{ width: '350px', height: 'fit-content'}} className='card'  key={game.id}>
+                            <Card sx={{ width: '382px', height: 'fit-content'}} className='card'  key={game.id}>
                                 <CardActionArea key={game.id+1} >
                                     <CardMedia
                                     component="img"
@@ -56,7 +56,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getAllGames}) => {
                                         {/* 
                                         <FontAwesomeIcon size="lg"  icon={faApple} className='icon_platform'/>
                                         <FontAwesomeIcon size="lg"  icon={faLinux} className='icon_platform'/> */}
-                                        <Typography gutterBottom variant="h6" component="div" sx={{minHeight: '64px'}} key={game.id+3}>
+                                        <Typography gutterBottom variant="h6" component="div" sx={{minHeight: '32px'}} key={game.id+3}>
                                             {game.name}
                                         </Typography>
                                     </CardContent>
@@ -75,8 +75,14 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getAllGames}) => {
                 }
             </Grid>
             <Stack spacing={2} className='pagination'>
-                <Pagination count={3} shape="rounded" color='primary' sx={{color:'white'}} onClick={(event) => 
-                       (console.log(document.querySelector('.Mui-selected')?.textContent))
+                <Pagination count={5} shape="rounded" color='primary' sx={{color:'white'}} onClick={(event) => 
+                    setTimeout(() => {
+                        const pageNum = document?.querySelector('.Mui-selected')?.textContent;
+                        if(pageNum) {
+                            setPage(+pageNum);
+                        }
+                        // console.log(document.querySelector('.Mui-selected')?.textContent);
+                    }, 0)
                 }/>
             </Stack>
         </Container>
