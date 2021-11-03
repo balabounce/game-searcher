@@ -1,9 +1,9 @@
 import { API_KEY } from "../App";
 import gamesCounter from "../functions/gamesCounter";
 
-const getPopularGames = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>, setCount: React.Dispatch<React.SetStateAction<number>>) => {
+const searchGame = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>, setCount: React.Dispatch<React.SetStateAction<number>>, input: string) => {
     let resultArr;
-    gamesCounter('2020-01-01', '2020-12-31', setCount, `https://api.rawg.io/api/games?games_count&dates=2020-01-01,2020-12-31&key=${API_KEY}`);
+    gamesCounter('', '', setCount, `https://api.rawg.io/api/games?search=${input}&key=${API_KEY}`);
     fetch(`https://api.rawg.io/api/games?rating_top&dates=2020-01-01,2020-12-31&page=${pageNum}&key=${API_KEY}`)
     .then(res => res.json())
     .then(
@@ -18,4 +18,4 @@ const getPopularGames = (pageNum: number, setGames: React.Dispatch<React.SetStat
     );
 };
 
-export default getPopularGames;
+export default searchGame;

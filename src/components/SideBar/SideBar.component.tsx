@@ -140,7 +140,7 @@ const SideBar: React.FC = () => {
         </Typography>
 		
         <List>
-          {['Best of the year', 'Popular in 2020', 'All time top 250'].map((text, index) => (
+          {['Best of the year', 'Popular in 2020', 'All time top 100'].map((text, index) => (
 			<Link href={`/discover/${text.toLowerCase().replace(/ /g, '-')}`} color='secondary' sx={{textDecoration: 'none'}} key={index}>
 				<ListItem button key={text} className='listitem'>
 					<ListItemIcon>

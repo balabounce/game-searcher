@@ -13,6 +13,7 @@ import getNextWeekGames from './api/nextWeekGames';
 import getGoty from './api/goty';
 import getPopularGames from './api/popularGames';
 import getTopGames from './api/allTopGames';
+import GamePage from './components/GamePage/GamePage';
 
 export const API_KEY = 'c542e67aec3a4340908f9de9e86038af';
 
@@ -55,7 +56,7 @@ function App() {
 		<SideBar/>
 		<BrowserRouter>
 				<Route exact path='/'>
-					<GamesList titleGamesList='All Games' getGames={getAllGames} />
+					<GamesList titleGamesList='New and trending' getGames={getAllGames} />
 				</Route>
 				<Route exact path='/discover/last-30-days'>
 					<GamesList titleGamesList='Last 30 Days' getGames={getLastGames}/>
@@ -72,12 +73,10 @@ function App() {
 				<Route exact path='/discover/popular-in-2020'>
 					<GamesList titleGamesList='Popular in 2020' getGames={getPopularGames}/>
 				</Route>
-				<Route exact path='/discover/popular-in-2020'>
-					<GamesList titleGamesList='Popular in 2020' getGames={getPopularGames}/>
+				<Route exact path='/discover/all-time-top-100'>
+					<GamesList titleGamesList='Top 100' getGames={getTopGames}/>
 				</Route>
-				<Route exact path='/discover/all-time-top-250'>
-					<GamesList titleGamesList='Top 250' getGames={getTopGames}/>
-				</Route>
+				<Route exact path='/games/:id/:name' component={GamePage}/>
 		</BrowserRouter>
 	</div>
 	);
