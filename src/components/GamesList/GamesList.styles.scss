@@ -22,21 +22,20 @@
 }
 
 .gameslist-container {
-    margin-top: 100px;
-    margin-left: 250px !important;
+    margin-top: 82px;
+    margin-left: 240px !important;
     padding-left: 0px !important;
+    padding-top: 15px;
     width: fit-content;
+    background-color: rgb(5, 52, 66); 
+    height: 100%;
 }
 
 .pagination {
-    position: absolute;
     background-color: rgb(73, 139, 139);
     border-radius: 2%;
     width: fit-content;
     margin: 0 auto;
     margin-bottom: 10px;
-    left: 56%;
-    transform: translateX(-50%);
-   
 }
 

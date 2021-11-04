@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid, Typography, IconButton, Stack, Pagination, Link  } from "@mui/material";
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid, Typography, IconButton, Stack, Pagination, Link, List  } from "@mui/material";
 import './GamesList.styles.scss';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindows, faPlaystation, faXbox, faApple, faLinux } from "@fortawesome/free-brands-svg-icons";
 import LazyLoad from 'react-lazyload';
+// import { useTheme } from '@mui/styles';
 
 interface GamesListProps {
     titleGamesList: string,
@@ -21,50 +22,51 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
     useEffect(() => {
         const result = getGames ? getGames(page, setGames, setCount) : null;
     }, [page]);
+    // const theme = useTheme();
 
     return (
-        <Container className='gameslist-container'>
+        <div className='gameslist-container'>
             <Typography sx={{paddingLeft: '5px', color: 'white', marginBottom:'10px'}}  variant="h3" component="h3"> {titleGamesList} </Typography>
-            <Grid container spacing={1} sx={{width: 'calc(140% + 8px)'}}>
+            <Grid container spacing={1}>
                 {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     games.map((game: any) => {
                         return (
                             <Card sx={{ width: '382px', height: 'fit-content'}} className='card'  key={game.id}>
-                                <Link href={`/games/${game.id}/${game.name.replace(/ /g, '-').replace(/\/|:|/g, '').replace(/--/g,'-').toLowerCase()}`}>
                                     <CardActionArea key={game.id+1} >
-                                        <LazyLoad height={200}>
-                                            <CardMedia
-                                            component="img"
-                                            height="220"
-                                            image={game.background_image}
-                                            alt={`${game.name}_poster`}
-                                            key={game.id}
-                                            />
-                                        </LazyLoad>
-                                        <CardContent className='card card__content' key={game.id+2}>
-                                            {game.parent_platforms ? game.parent_platforms.map((platform: any) => {
-                                                // console.log(platform.platform);
-                                                switch(platform.platform.name) {
-                                                    case 'PC' :
-                                                        return <FontAwesomeIcon size="lg"  icon={faWindows} className='icon_platform' key={1}/>;
-                                                    case 'PlayStation': 
-                                                        return <FontAwesomeIcon size="lg"  icon={faPlaystation} className='icon_platform' key={2}/>;
-                                                    case 'Xbox':
-                                                        return <FontAwesomeIcon size="lg"  icon={faXbox} className='icon_platform' key={3}/>;
-                                                    default:
-                                                        return null;
-                                                }
-                                            }) : null}
-                                            {/* 
-                                            <FontAwesomeIcon size="lg"  icon={faApple} className='icon_platform'/>
-                                            <FontAwesomeIcon size="lg"  icon={faLinux} className='icon_platform'/> */}
-                                            <Typography gutterBottom variant="h6" component="div" sx={{minHeight: '32px'}} key={game.id+3}>
-                                                {game.name}
-                                            </Typography>
-                                        </CardContent>
+                                        <Link href={`/games/${game.id}/${game.name.replace(/ /g, '-').replace(/\/|:|/g, '').replace(/--+/g,'-').toLowerCase()}`}>
+                                            <LazyLoad height={200}>
+                                                <CardMedia
+                                                component="img"
+                                                height="220"
+                                                image={game.background_image}
+                                                alt={`${game.name}_poster`}
+                                                key={game.id}
+                                                />
+                                            </LazyLoad>
+                                            <CardContent className='card card__content' key={game.id+2}>
+                                                {game.parent_platforms ? game.parent_platforms.map((platform: any) => {
+                                                    // console.log(platform.platform);
+                                                    switch(platform.platform.name) {
+                                                        case 'PC' :
+                                                            return <FontAwesomeIcon size="lg"  icon={faWindows} className='icon_platform' key={1}/>;
+                                                        case 'PlayStation': 
+                                                            return <FontAwesomeIcon size="lg"  icon={faPlaystation} className='icon_platform' key={2}/>;
+                                                        case 'Xbox':
+                                                            return <FontAwesomeIcon size="lg"  icon={faXbox} className='icon_platform' key={3}/>;
+                                                        default:
+                                                            return null;
+                                                    }
+                                                }) : null}
+                                                {/* 
+                                                <FontAwesomeIcon size="lg"  icon={faApple} className='icon_platform'/>
+                                                <FontAwesomeIcon size="lg"  icon={faLinux} className='icon_platform'/> */}
+                                                <Typography gutterBottom variant="h6" component="div" sx={{minHeight: '32px'}} key={game.id+3}>
+                                                    {game.name}
+                                                </Typography>
+                                            </CardContent>
+                                        </Link>
                                     </CardActionArea>
-                                </Link>
                                 <CardActions sx={{paddingLeft: '10px'}} key={game.id+4}>
                                     <IconButton> 
                                         <FavoriteBorderIcon className='icon_button'/>
@@ -100,7 +102,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
                     }/>
                 : null}
             </Stack>
-        </Container>
+        </div>
       );
       
 };

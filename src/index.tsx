@@ -5,6 +5,9 @@ import App from './App';
 import { Auth0Provider } from '@auth0/auth0-react';
 import reportWebVitals from './reportWebVitals';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
+import  {makeStyles} from '@mui/styles';
+import '@mui/lab/themeAugmentation';
+import { Paper } from '@mui/material';
 
 const theme = createTheme({
 	palette: {
@@ -20,8 +23,14 @@ const theme = createTheme({
 			'Azeret Mono',
 			'sans-serif'
 		].join(','),
-	}
+	},
 });
+
+// const styles = theme => ({
+//     drawerPaper: {
+//       backgroundImage: 'url(https://designshack.net/wp-content/uploads/gradient-background.jpg)'
+//     },
+// });
 
 ReactDOM.render(
 	<React.StrictMode>
@@ -30,8 +39,8 @@ ReactDOM.render(
 			clientId="ZRqrTZ6uVqPqjykH4uZlspx36L6SlL8V"
 			redirectUri={window.location.origin}
 			>      
-			<ThemeProvider theme={theme}>
-				<App />
+			<ThemeProvider theme={theme} >
+					<App  />
 			</ThemeProvider>
 		</Auth0Provider>
 	</React.StrictMode>,
