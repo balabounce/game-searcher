@@ -15,4 +15,6 @@ code {
 
 html {
   background-color: rgb(5, 52, 66);
+  overflow-x: hidden;
+  margin-right: calc(-1 * (100vw - 100%));
 }

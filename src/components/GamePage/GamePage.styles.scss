@@ -5,3 +5,21 @@
     margin-right: 10px;
 }
 
+.icon_sentiment {
+    margin-left: 15px;
+    margin-right: 8px;
+    width: 35px !important;
+    height: 45px !important;
+    &_good {
+        color: rgb(105, 230, 105);
+    }
+    &_rec {
+        color: rgb(71, 160, 71);
+    }
+    &_bad {
+        color: rgb(194, 91, 91);
+    }
+    &_awful {
+        color: rgb(226, 105, 105);
+    }
+}
