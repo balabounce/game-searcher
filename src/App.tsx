@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './App.css';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route} from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './components/Header/Header.component';
 import SideBar from './components/SideBar/SideBar.component';
@@ -17,7 +17,7 @@ import GamePage from './components/GamePage/GamePage';
 
 export const API_KEY = 'c542e67aec3a4340908f9de9e86038af';
 
-function App() {
+function App(): JSX.Element {
 	const { user, isAuthenticated, isLoading } = useAuth0();
 	if((!localStorage.getItem('user') || localStorage.getItem('user') !== undefined) &&  isAuthenticated) {
 		localStorage.setItem('user', JSON.stringify(user));

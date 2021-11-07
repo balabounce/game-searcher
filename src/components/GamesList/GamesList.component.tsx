@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Grid, Typography, IconButton, Stack, Pagination, Link, List  } from "@mui/material";
+import { Card, CardActionArea, CardActions, CardContent, CardMedia, Typography, IconButton, Stack, Pagination, Link, Grid  } from "@mui/material";
 import './GamesList.styles.scss';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWindows, faPlaystation, faXbox, faApple, faLinux } from "@fortawesome/free-brands-svg-icons";
+import { faWindows, faPlaystation, faXbox } from "@fortawesome/free-brands-svg-icons";
 import LazyLoad from 'react-lazyload';
 // import { useTheme } from '@mui/styles';
 
@@ -20,7 +21,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
     const [countGames, setCount] = useState(0);
 
     useEffect(() => {
-        const result = getGames ? getGames(page, setGames, setCount) : null;
+        getGames ? getGames(page, setGames, setCount) : null;
     }, [page]);
     // const theme = useTheme();
 
@@ -82,7 +83,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
             </Grid>
             <Stack spacing={2} className='pagination'>
                 {titleGamesList === 'Top 100' ? 
-                    <Pagination count={5} shape="rounded" color='primary' sx={{color:'white'}} onClick={(event) => 
+                    <Pagination count={5} shape="rounded" color='primary' sx={{color:'white'}} onClick={() => 
                         setTimeout(() => {
                             const pageNum = document?.querySelector('.Mui-selected')?.textContent;
                             if(pageNum) {
@@ -92,7 +93,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
                     }/>
                 :
                 countGames ? 
-                    <Pagination count={countGames} shape="rounded" color='primary' sx={{color:'white'}} onClick={(event) => 
+                    <Pagination count={countGames} shape="rounded" color='primary' sx={{color:'white'}} onClick={() => 
                         setTimeout(() => {
                             const pageNum = document?.querySelector('.Mui-selected')?.textContent;
                             if(pageNum) {

@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useAuth0 } from '@auth0/auth0-react';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'; 
 import StarIcon from '@mui/icons-material/Star';
@@ -20,7 +19,6 @@ import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import { Link } from '@mui/material';
 import userLocalCheck from '../../functions/userLocalCheck';
 import './SideBar.styles.scss';
-import { Router } from 'react-router';
 
 
 const drawerWidth = 240;

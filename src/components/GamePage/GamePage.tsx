@@ -1,7 +1,7 @@
 import { faPlaystation, faWindows, faXbox } from "@fortawesome/free-brands-svg-icons";
 import nintendo from './nintendo.svg';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, ButtonGroup, Container, Grid, Icon, IconButton, List, Typography } from "@mui/material";
+import { Button, ButtonGroup, Container, Grid, Icon, IconButton, ImageList, ImageListItem, Link, List, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_KEY } from "../../App";
@@ -14,6 +14,7 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import GamesList from "../GamesList/GamesList.component";
+import YouTube from "react-youtube";
 
 const ratingText = (rate: string) => {
     return rate[0].toUpperCase() + rate.slice(1);
@@ -69,6 +70,54 @@ const writePlatforms = (platArr: any[]) => {
     return result.join(', ');
 };
 
+const writeGenres = (genreArr: any[]) => {
+    const result: string|null[] = [];
+    genreArr.map(genre => {
+        const genreName = genre.name;
+        result.push(genreName);
+    });
+
+    return result.join(', ');
+};
+
+const writeDevelopers = (devArr: any[]) => {
+    const result: string|null[] = [];
+    devArr.map(developer => {
+        const devName = developer.name;
+        result.push(devName);
+    });
+
+    return result.join(', ');
+};
+
+const writePublishers = (pubArr: any[]) => {
+    const result: string|null[] = [];
+    pubArr.map(publisher => {
+        const pubName = publisher.name;
+        result.push(pubName);
+    });
+
+    return result.join(', ');
+};
+
+const writeTag = (tagArr: any[]) => {
+    const result: string|null[] = [];
+    tagArr.map(tag => {
+        const tagName = tag.name;
+        result.push(tagName);
+    });
+
+    return result.join(', ');
+};
+
+const getUrl = (screens: any[] | undefined) => {
+    const screenArr: string[]  = [];
+    screens?.map(screen => {
+        screenArr.push(screen.image);
+    });  
+    return screenArr;
+};
+
 
 const buttons = [
     <Button key='cart'>
@@ -95,7 +144,8 @@ const GamePage = () => {
     const [game, setGame] = useState<any>({});
     const [fullDescr, setFullDescr] = useState<string|null>(null);
     const [flagDescrOpen, setFlagDescrOpen] = useState(false);
-    
+    const [screenGame, setScreenGame] = useState<any[]|undefined>([]);
+    const [screenGameUrl, setUrls] = useState<string[]>([]);
     useEffect(() => {
         fetch(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)
         .then(res => res.json())
@@ -108,11 +158,25 @@ const GamePage = () => {
             console.log(error);
         }
         );
+        fetch(`https://api.rawg.io/api/games/${game.id}/screenshots?key=${API_KEY}`)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setScreenGame(result.results);
+                },
+            (error) => {
+                console.log(error);
+            }
+        );
     },[]);
+    useEffect(() => {
+        const res = getUrl(screenGame);
+        setUrls(res);
+    }, [screenGame]);
 
-    console.log(game);
+
     return (
-        <>
+        <section className='game_section'>
             <Container sx={{paddingTop: '100px', paddingLeft: '300px !important', backgroundImage: `${game.background_image}`}}>
                 <Typography
                 variant="caption" component="div" sx={{color: 'white', opacity: '.7', marginBottom: '15px'}}>
@@ -177,6 +241,7 @@ const GamePage = () => {
                         onClick={() => {setFlagDescrOpen(!flagDescrOpen);}}
                         size='small' 
                         color='primary' 
+                        className='read_more_btn'
                         sx={{backgroundColor: 'white', padding: '1px', fontSize: '10px', borderRadius: '0px'
                         }}>
                             Read more
@@ -184,69 +249,103 @@ const GamePage = () => {
                     </Typography>
                 </Container>
                 <Grid container spacing={2} ml={0}>
-                    <Grid item xs={4} sx={{paddingLeft: '0px !important'}}>
-                        <Container sx={{padding: '0px !important', marginBottom: '10px'}}>
+                    <Grid item className='grid_item' xs={4}>
+                        <Container className='grid_container'>
                             <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 Platforms
                             </Typography>
-                            <Typography variant="body1" component="span" color='secondary' sx={{marginRight: '5px', marginBottom:'5px', textDecoration: 'underline'}}>
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
                                 {game && game.platforms ? writePlatforms(game.platforms) : null}
                             </Typography>
                         </Container>
                     </Grid>
-                    <Grid item xs={6} sx={{paddingLeft: '0px !important'}}>
-                        <Container sx={{padding: '0px !important', marginBottom: '10px'}}>
+                    <Grid item xs={6} className='grid_item'>
+                        <Container className='grid_container'>
                             <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 Genre
                             </Typography>
-                            <Typography variant="body1" component="span" color='secondary' sx={{marginRight: '5px', marginBottom:'5px', textDecoration: 'underline'}}>
-                                Platforms
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                            {game && game.genres ? writeGenres(game.genres) : null}
                             </Typography>
                         </Container>
                     </Grid>
-                    <Grid item xs={4} sx={{paddingLeft: '0px !important'}}>
-                        <Container sx={{padding: '0px !important', marginBottom: '10px'}}>
+                    <Grid item xs={4} className='grid_item'>
+                        <Container className='grid_container'>
                             <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 Release Date
                             </Typography>
-                            <Typography variant="body1" component="span" color='secondary' sx={{marginRight: '5px', marginBottom:'5px', textDecoration: 'underline'}}>
-                                Platforms
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                            {game && game.released ? game.released : 'TBA'}
                             </Typography>
                         </Container>
                     </Grid>
-                    <Grid item xs={6} sx={{paddingLeft: '0px !important'}}>
-                        <Container sx={{padding: '0px !important', marginBottom: '10px'}}>
+                    <Grid item xs={6} className='grid_item'>
+                        <Container className='grid_container'>
                             <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 Developer
                             </Typography>
-                            <Typography variant="body1" component="span" color='secondary' sx={{marginRight: '5px', marginBottom:'5px', textDecoration: 'underline'}}>
-                                Platforms
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                            {game && game.developers ? writeDevelopers(game.developers) : null}
                             </Typography>
                         </Container>
                     </Grid>   
-                    <Grid item xs={4} sx={{paddingLeft: '0px !important'}}>
-                        <Container sx={{padding: '0px !important', marginBottom: '10px'}}>
+                    <Grid item  className='grid_item' xs={4}>
+                        <Container className='grid_container'>
                             <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 Publisher
                             </Typography>
-                            <Typography variant="body1" component="span" color='secondary' sx={{marginRight: '5px', marginBottom:'5px', textDecoration: 'underline'}}>
-                                Platforms
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                                {game && game.publishers ? writePublishers(game.publishers) : null}
                             </Typography>
                         </Container>
                     </Grid>  
-                    <Grid item xs={6} sx={{paddingLeft: '0px !important'}}>
-                        <Container sx={{padding: '0px !important', marginBottom: '10px'}}>
+                    <Grid item xs={6} className='grid_item'>
+                        <Container className='grid_container'>
                             <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 Age rating
                             </Typography>
-                            <Typography variant="body1" component="span" color='secondary' sx={{marginRight: '5px', marginBottom:'5px', textDecoration: 'underline'}}>
-                                Platforms
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                                {game && game.esrb_rating ? game.esrb_rating.name : 'Not rated yet'}
                             </Typography>
                         </Container>
-                    </Grid>                       
+                    </Grid>  
+                    <Grid item xs={8} className='grid_item'>
+                        <Container className='grid_container'>
+                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
+                                Tags
+                            </Typography>
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                                {game && game.tags ? writeTag(game.tags) : '-'}
+                            </Typography>
+                        </Container>
+                    </Grid>
+                    <Grid item xs={8} className='grid_item' sx={{marginLeft : '0px !important'}}>
+                        <Container className='grid_container'>
+                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
+                                Website
+                            </Typography>
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                                {game && game.website ? 
+                                <Link href={game.website} color='secondary' sx={{cursor: 'pointer'}}>{game.website}</Link>
+                                : '-'}
+                            </Typography>
+                        </Container>
+                    </Grid>                            
                 </Grid>
             </Container>
-        </>
+            <Container> 
+                <Grid container rowSpacing={1} columnSpacing={1} ml={0} mt={11}>
+                    <Grid item xs={8} className='grid_item_video' sx={{margin : '0px auto !important'}}>
+                        {game && game.clip ? <YouTube videoId={game.clip.video}/> : null}
+                    </Grid>
+                    {screenGameUrl.map(url => 
+                        <Grid item className='grid_item_img' xs={6} >
+                            <img src={url} className='screen_image'/>
+                        </Grid>
+                    )}  
+                </Grid>
+            </Container>
+        </section>
     );
 };
 

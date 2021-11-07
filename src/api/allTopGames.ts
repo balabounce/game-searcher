@@ -1,6 +1,6 @@
 import { API_KEY } from "../App";
 
-const getTopGames = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>, setCount: React.Dispatch<React.SetStateAction<number>>) => {
+const getTopGames = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>):void => {
     let resultArr;
     fetch(`https://api.rawg.io/api/games?rating_top&page=${pageNum}&key=${API_KEY}`)
     .then(res => res.json())

@@ -5,9 +5,7 @@ import App from './App';
 import { Auth0Provider } from '@auth0/auth0-react';
 import reportWebVitals from './reportWebVitals';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
-import  {makeStyles} from '@mui/styles';
 import '@mui/lab/themeAugmentation';
-import { Paper } from '@mui/material';
 
 const theme = createTheme({
 	palette: {
@@ -25,12 +23,6 @@ const theme = createTheme({
 		].join(','),
 	},
 });
-
-// const styles = theme => ({
-//     drawerPaper: {
-//       backgroundImage: 'url(https://designshack.net/wp-content/uploads/gradient-background.jpg)'
-//     },
-// });
 
 ReactDOM.render(
 	<React.StrictMode>

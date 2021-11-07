@@ -1,7 +1,7 @@
 import { API_KEY } from "../App";
 import gamesCounter from "../functions/gamesCounter";
 
-const getAllGames = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>, setCount: React.Dispatch<React.SetStateAction<number>>) => {
+const getAllGames = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>, setCount: React.Dispatch<React.SetStateAction<number>>): void => {
     const now = new Date();
     now.setDate(1);
     const nowStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '-').replace(/\./g,'');
@@ -16,7 +16,6 @@ const getAllGames = (pageNum: number, setGames: React.Dispatch<React.SetStateAct
     .then(
     (result) => {
         resultArr = result.results ;
-        // console.log(resultArr);
         setGames(resultArr);
     },
     (error) => {

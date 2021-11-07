@@ -23,3 +23,34 @@
         color: rgb(226, 105, 105);
     }
 }
+
+.grid_item {
+    padding-left: 0px !important;
+    &:nth-of-type(2n) {
+        margin-left: 30px;
+    }
+}
+
+.grid_container {
+    padding: 0px !important;
+    margin-bottom: 10px;
+}
+
+.read_more_btn:hover {
+    background-color: white !important;
+}
+
+.grid_body {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    text-decoration: none;
+}
+
+.game_section {
+    display: flex;
+}
+
+.screen_image {
+    width: 100%;
+    height: 100%;
+}
