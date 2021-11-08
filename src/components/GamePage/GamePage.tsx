@@ -1,4 +1,4 @@
-import { faPlaystation, faWindows, faXbox } from "@fortawesome/free-brands-svg-icons";
+import { faApple, faAppStore, faPlaystation, faSteam, faWindows, faXbox } from "@fortawesome/free-brands-svg-icons";
 import nintendo from './nintendo.svg';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, ButtonGroup, Container, Grid, Icon, IconButton, ImageList, ImageListItem, Link, List, Typography } from "@mui/material";
@@ -15,8 +15,12 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import GamesList from "../GamesList/GamesList.component";
 import YouTube from "react-youtube";
+import gog from './gog.svg';
+import epicGames from './epic-games.svg';
+import nintendoStore from './nintendo-switch.png';
 
 const ratingText = (rate: string) => {
+
     return rate[0].toUpperCase() + rate.slice(1);
 };
 
@@ -60,51 +64,17 @@ const formReleaseDate = (date: string) => {
     
 };
 
-const writePlatforms = (platArr: any[]) => {
+
+const writeInfo = (arr: any[] | undefined, about: string) => {
     const result: string|null[] = [];
-    platArr.map(platform => {
-        const platName = platform.platform.name;
-        result.push(platName);
-    });
-
-    return result.join(', ');
-};
-
-const writeGenres = (genreArr: any[]) => {
-    const result: string|null[] = [];
-    genreArr.map(genre => {
-        const genreName = genre.name;
-        result.push(genreName);
-    });
-
-    return result.join(', ');
-};
-
-const writeDevelopers = (devArr: any[]) => {
-    const result: string|null[] = [];
-    devArr.map(developer => {
-        const devName = developer.name;
-        result.push(devName);
-    });
-
-    return result.join(', ');
-};
-
-const writePublishers = (pubArr: any[]) => {
-    const result: string|null[] = [];
-    pubArr.map(publisher => {
-        const pubName = publisher.name;
-        result.push(pubName);
-    });
-
-    return result.join(', ');
-};
-
-const writeTag = (tagArr: any[]) => {
-    const result: string|null[] = [];
-    tagArr.map(tag => {
-        const tagName = tag.name;
-        result.push(tagName);
+    arr?.map(item => {
+        let name;
+        if(about === 'platforms') {
+            name = item.platform.name;
+        } else {
+            name = item.name;
+        }
+        result.push(name);
     });
 
     return result.join(', ');
@@ -116,6 +86,11 @@ const getUrl = (screens: any[] | undefined) => {
         screenArr.push(screen.image);
     });  
     return screenArr;
+};
+
+const resizeImage = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    target.style.width = '10px';
 };
 
 
@@ -153,12 +128,14 @@ const GamePage = () => {
             (result) => {
                 setGame(result);
                 setFullDescr(result.description_raw);
+               
         },
         (error) => {
             console.log(error);
         }
-        );
-        fetch(`https://api.rawg.io/api/games/${game.id}/screenshots?key=${API_KEY}`)
+        )
+        .then(() => {
+            fetch(`https://api.rawg.io/api/games/${id}/screenshots?page=1&page_size=3&key=${API_KEY}`)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -168,12 +145,15 @@ const GamePage = () => {
                 console.log(error);
             }
         );
+        })
+        ;
+        
     },[]);
     useEffect(() => {
         const res = getUrl(screenGame);
         setUrls(res);
     }, [screenGame]);
-
+    console.log(game);
 
     return (
         <section className='game_section'>
@@ -255,7 +235,7 @@ const GamePage = () => {
                                 Platforms
                             </Typography>
                             <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.platforms ? writePlatforms(game.platforms) : null}
+                                {game && game.platforms ? writeInfo(game.platforms, 'platforms') : null}
                             </Typography>
                         </Container>
                     </Grid>
@@ -265,7 +245,7 @@ const GamePage = () => {
                                 Genre
                             </Typography>
                             <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.genres ? writeGenres(game.genres) : null}
+                            {game && game.genres ? writeInfo(game.genres, 'genres') : null}
                             </Typography>
                         </Container>
                     </Grid>
@@ -285,7 +265,7 @@ const GamePage = () => {
                                 Developer
                             </Typography>
                             <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.developers ? writeDevelopers(game.developers) : null}
+                            {game && game.developers ? writeInfo(game.developers, 'developers') : null}
                             </Typography>
                         </Container>
                     </Grid>   
@@ -295,7 +275,7 @@ const GamePage = () => {
                                 Publisher
                             </Typography>
                             <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.publishers ? writePublishers(game.publishers) : null}
+                                {game && game.publishers ? writeInfo(game.publishers, 'publishers') : null}
                             </Typography>
                         </Container>
                     </Grid>  
@@ -315,7 +295,7 @@ const GamePage = () => {
                                 Tags
                             </Typography>
                             <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.tags ? writeTag(game.tags) : '-'}
+                                {game && game.tags ? writeInfo(game.tags, 'tags') : '-'}
                             </Typography>
                         </Container>
                     </Grid>
@@ -330,21 +310,100 @@ const GamePage = () => {
                                 : '-'}
                             </Typography>
                         </Container>
+                    </Grid>
+                    <Grid item xs={8} className='grid_item' sx={{marginLeft : '0px !important'}}>
+                        <Container className='grid_container'>
+                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
+                                System Requirements
+                            </Typography>
+                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
+                                {game && game.platform ? writeInfo(game.platforms, 'publishers') : null}
+                            </Typography>
+                        </Container>
                     </Grid>                            
                 </Grid>
             </Container>
             <Container> 
-                <Grid container rowSpacing={1} columnSpacing={1} ml={0} mt={11}>
-                    <Grid item xs={8} className='grid_item_video' sx={{margin : '0px auto !important'}}>
+                <Grid container rowSpacing={1} columnSpacing={1} ml={0} mt={11} className='grid_container_vidscr' >
+                    <Grid item xs={8} className='grid_item_video' >
                         {game && game.clip ? <YouTube videoId={game.clip.video}/> : null}
                     </Grid>
-                    {screenGameUrl.map(url => 
-                        <Grid item className='grid_item_img' xs={6} >
-                            <img src={url} className='screen_image'/>
+                    {screenGameUrl.map((url, index) => 
+                        <Grid item className='grid_item_img' xs={5} sx={{width: '105px', height: '185px'}} key={index} >
+                            <img src={url} className='screen_image' onClick={(event) => resizeImage(event)}/>
                         </Grid>
-                    )}  
+                    )
+                    }
+                    {screenGame && screenGame.length > 0 &&
+                        <Grid item className='grid_item_img' xs={5} sx={{width: '105px', height: '185px'}} key={3} >
+                            <Button variant="contained" className='screen_btn'>
+                                <img src={screenGameUrl[2]} className='screen_image screen_image_btn'/>
+                                <Typography variant="body1" className='view_all' component="span" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
+                                View all
+                                </Typography>
+                            </Button>  
+                        </Grid>
+                    }
+                     <Grid item xs={12} mt={1} mb={5} className='grid_item_whereToBuy' >
+                        <Typography variant="h5" className='view_all' component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
+                            Where To Buy
+                        </Typography>
+                        
+                    </Grid>
+                    {game && game.stores && game.stores.map((item: any) => {
+                            switch(item.store.name) {
+                                case 'GOG' :
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                            <Button variant="contained" color='secondary' className='screen_btn'>
+                                                GOG
+                                                <img src={gog} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
+                                            </Button>
+                                        </Link>
+                                    </Grid>;
+                                case 'Epic Games' :
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                            <Button variant="contained" color='secondary' className='screen_btn'>
+                                                Epic Games
+                                                <img src={epicGames} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
+                                            </Button>
+                                        </Link>
+                                    </Grid>;
+                                case 'Steam' :
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                            <Button variant="contained" color='secondary' className='screen_btn'>
+                                                Steam
+                                                <FontAwesomeIcon className='icon_store' icon={faSteam} style={{width: '2em'}}/>
+                                            </Button>
+                                        </Link>
+                                    </Grid>;
+                                case 'App Store':
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                            <Button variant="contained" color='secondary' className='screen_btn'>
+                                                App Store
+                                                <FontAwesomeIcon className='icon_store' icon={faAppStore} style={{width: '2em'}}/>
+                                            </Button>
+                                        </Link>
+                                    </Grid>;
+                                case 'Nintendo Store': 
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                                <Button variant="contained" color='secondary' className='screen_btn'>
+                                                    Nintendo Store
+                                                    <img src={nintendoStore} alt="nintendo store" className='icon_store' style={{width: '30px', height: '30px', color: 'black'}}/>
+                                                </Button>
+                                        </Link>
+                                        </Grid>;
+                                default: 
+                                return null;
+                            }
+                        })}
                 </Grid>
             </Container>
+
         </section>
     );
 };

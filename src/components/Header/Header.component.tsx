@@ -112,10 +112,10 @@ const PrimarySearchAppBar: React.FC = () => {
       sx={{marginTop:'60px'}}
     >
         {user ?
-			menuItemArr.map(menuItem => {
-				return menuItem;
-			})
-     :     <MenuItem onClick={loginWithRedirect}>Login</MenuItem>}
+          menuItemArr.map(menuItem => {
+            return menuItem;
+          })
+        : <MenuItem onClick={loginWithRedirect}>Login</MenuItem>}
     </Menu>
   );
 
@@ -222,7 +222,7 @@ const PrimarySearchAppBar: React.FC = () => {
           </Box>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
+      {/* {renderMobileMenu} */}
       {renderMenu}
     </Box>
   );

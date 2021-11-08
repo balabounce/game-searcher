@@ -51,6 +51,43 @@
 }
 
 .screen_image {
-    width: 100%;
     height: 100%;
+    border-radius: 10px;
+}
+
+.grid_container_vidscr {
+    position: absolute;
+    width: 785px !important;
+}
+
+.screen_btn {
+    width: 100%; 
+    height: 100%; 
+    padding: 0px !important;
+    box-shadow: none !important;
+}
+
+.grid_item_img {
+    position: relative;
+    text-align: center;
+    padding-right: 4px;
+}
+
+.screen_image_btn {
+    opacity: .3;
+    transition: opacity .5s;
+    &:hover {
+        opacity: .5;
+    }
+}
+
+.view_all {
+    position: absolute;
+    opacity: 1 !important;
+}
+
+.icon_store {
+    width: 40px;
+    height: 50px;
+    margin-left: 20px;
 }

@@ -27,7 +27,7 @@ const GamesList: React.FC<GamesListProps> = ({titleGamesList, getGames}) => {
 
     return (
         <div className='gameslist-container'>
-            <Typography sx={{paddingLeft: '5px', color: 'white', marginBottom:'10px'}}  variant="h3" component="h3"> {titleGamesList} </Typography>
+            <Typography sx={{paddingLeft: '5px', color: 'white', marginBottom:'10px', width: 'fit-content'}}  variant="h3" component="h3"> {titleGamesList} </Typography>
             <Grid container spacing={1}>
                 {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
