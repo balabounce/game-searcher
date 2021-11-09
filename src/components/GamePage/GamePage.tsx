@@ -8,7 +8,6 @@ import { API_KEY } from "../../App";
 import './GamePage.styles.scss';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
-import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -18,9 +17,10 @@ import YouTube from "react-youtube";
 import gog from './gog.svg';
 import epicGames from './epic-games.svg';
 import nintendoStore from './nintendo-switch.png';
+import { IPlatform, IScreen, IStoreObj } from "./interfaces";
+import { Slider } from "../Slider/Slider.component";
 
 const ratingText = (rate: string) => {
-
     return rate[0].toUpperCase() + rate.slice(1);
 };
 
@@ -47,20 +47,10 @@ const formReleaseDate = (date: string) => {
         "Jan", "Feb", "Mar",
         "Apr", "May", "Jun", "Jul",
         "Aug", "Sep", "Oct",
-        "Novr", "Dec"
+        "Nov", "Dec"
     ];
     const result =  `${monthNames[month].toUpperCase()} ${day}, ${year}`;
-    return <Typography
-        variant="subtitle2" component="div" color='primary' sx={{fontWeight: '200px', 
-        marginRight: '10px',
-        backgroundColor: 'white', 
-        width: 'fit-content',
-        borderRadius: '4px',
-        padding: '0px 2px'
-        }}
-        >
-            {result}
-        </Typography>;
+    return result;
     
 };
 
@@ -80,7 +70,7 @@ const writeInfo = (arr: any[] | undefined, about: string) => {
     return result.join(', ');
 };
 
-const getUrl = (screens: any[] | undefined) => {
+const getUrl = (screens: IScreen[] | undefined) => {
     const screenArr: string[]  = [];
     screens?.map(screen => {
         screenArr.push(screen.image);
@@ -88,9 +78,9 @@ const getUrl = (screens: any[] | undefined) => {
     return screenArr;
 };
 
-const resizeImage = (event: React.MouseEvent<HTMLElement>) => {
+const resizeImage = (event: React.MouseEvent<HTMLElement>, screens: IScreen[] | undefined) => {
     const target = event.target as HTMLElement;
-    target.style.width = '10px';
+    
 };
 
 
@@ -119,8 +109,10 @@ const GamePage = () => {
     const [game, setGame] = useState<any>({});
     const [fullDescr, setFullDescr] = useState<string|null>(null);
     const [flagDescrOpen, setFlagDescrOpen] = useState(false);
-    const [screenGame, setScreenGame] = useState<any[]|undefined>([]);
+    const [screenGame, setScreenGame] = useState<IScreen[]|undefined>([]);
     const [screenGameUrl, setUrls] = useState<string[]>([]);
+    const [isSliderOpen, sliderSwitch] = useState<boolean>(false);
+
     useEffect(() => {
         fetch(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)
         .then(res => res.json())
@@ -140,6 +132,7 @@ const GamePage = () => {
             .then(
                 (result) => {
                     setScreenGame(result.results);
+                    console.log(result.results);
                 },
             (error) => {
                 console.log(error);
@@ -157,14 +150,27 @@ const GamePage = () => {
 
     return (
         <section className='game_section'>
+            {isSliderOpen ? <Slider screens={screenGameUrl}/> : null}
             <Container sx={{paddingTop: '100px', paddingLeft: '300px !important', backgroundImage: `${game.background_image}`}}>
                 <Typography
                 variant="caption" component="div" sx={{color: 'white', opacity: '.7', marginBottom: '15px'}}>
                     HOME / GAMES / {game.name}
                 </Typography>
                 <Container sx={{display: 'flex', paddingLeft: '0px !important', alignItems: 'center', marginBottom: '15px'}}> 
-                    {game.released ? formReleaseDate(game.released) : null}  
-                    {game.parent_platforms ? game.parent_platforms ?.map((platform: any) => {
+                    {game.released ?
+                    <Typography
+                        variant="subtitle2" component="div" color='primary' sx={{fontWeight: '200px', 
+                        marginRight: '10px',
+                        backgroundColor: 'white', 
+                        width: 'fit-content',
+                        borderRadius: '4px',
+                        padding: '0px 2px'
+                        }}
+                    >
+                        {formReleaseDate(game.released) }
+                    </Typography>
+                    : null}  
+                    {game.parent_platforms ? game.parent_platforms ?.map((platform: IPlatform) => {
                         switch(platform.platform.name) {
                             case 'PC' :
                                 return <FontAwesomeIcon size="lg"  icon={faWindows} className='icon_platform' key={1}/>;
@@ -255,7 +261,7 @@ const GamePage = () => {
                                 Release Date
                             </Typography>
                             <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.released ? game.released : 'TBA'}
+                            {game && game.released ? formReleaseDate(game.released) : 'TBA'}
                             </Typography>
                         </Container>
                     </Grid>
@@ -330,7 +336,7 @@ const GamePage = () => {
                     </Grid>
                     {screenGameUrl.map((url, index) => 
                         <Grid item className='grid_item_img' xs={5} sx={{width: '105px', height: '185px'}} key={index} >
-                            <img src={url} className='screen_image' onClick={(event) => resizeImage(event)}/>
+                            <img src={url} className='screen_image' onClick={() => sliderSwitch(true)}/>
                         </Grid>
                     )
                     }
@@ -350,7 +356,7 @@ const GamePage = () => {
                         </Typography>
                         
                     </Grid>
-                    {game && game.stores && game.stores.map((item: any) => {
+                    {game && game.stores && game.stores.map((item: IStoreObj) => {
                             switch(item.store.name) {
                                 case 'GOG' :
                                     return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
@@ -397,13 +403,30 @@ const GamePage = () => {
                                                 </Button>
                                         </Link>
                                         </Grid>;
+                                case 'Xbox Store': 
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                                <Button variant="contained" color='secondary' className='screen_btn'>
+                                                    Xbox Store
+                                                    <FontAwesomeIcon className='icon_store' icon={faXbox} style={{width: '2em'}}/>
+                                                </Button>
+                                        </Link>
+                                        </Grid>;
+                                case 'PlayStation Store': 
+                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                                        <Link target="_blank" rel="noopener" href={item.url}>
+                                                <Button variant="contained" color='secondary' className='screen_btn'>
+                                                    Playstation Store
+                                                    <FontAwesomeIcon className='icon_store' icon={faPlaystation} style={{width: '2em'}}/>
+                                                </Button>
+                                        </Link>
+                                        </Grid>;
                                 default: 
                                 return null;
                             }
                         })}
                 </Grid>
             </Container>
-
         </section>
     );
 };
