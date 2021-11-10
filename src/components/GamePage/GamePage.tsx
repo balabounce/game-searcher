@@ -19,6 +19,7 @@ import epicGames from './epic-games.svg';
 import nintendoStore from './nintendo-switch.png';
 import { IPlatform, IScreen, IStoreObj } from "./interfaces";
 import { Slider } from "../Slider/Slider.component";
+import { SwitchStore } from "./SwitchStore.component";
 
 const ratingText = (rate: string) => {
     return rate[0].toUpperCase() + rate.slice(1);
@@ -78,9 +79,11 @@ const getUrl = (screens: IScreen[] | undefined) => {
     return screenArr;
 };
 
-const resizeImage = (event: React.MouseEvent<HTMLElement>, screens: IScreen[] | undefined) => {
+const sliderClose = (event: React.MouseEvent<HTMLElement, MouseEvent>, hook: React.Dispatch<React.SetStateAction<boolean>>) => {
     const target = event.target as HTMLElement;
-    
+    if(target.classList.contains('slider_container') || target.classList.contains('icon_close') || target.closest('svg')) {
+        hook(false);
+    }
 };
 
 
@@ -108,10 +111,10 @@ const GamePage = () => {
     const { name, id } = useParams<{name?: string, id?: string}>();
     const [game, setGame] = useState<any>({});
     const [fullDescr, setFullDescr] = useState<string|null>(null);
-    const [flagDescrOpen, setFlagDescrOpen] = useState(false);
+    const [flagDescrOpen, flagDescrSwitch] = useState(false);
     const [screenGame, setScreenGame] = useState<IScreen[]|undefined>([]);
     const [screenGameUrl, setUrls] = useState<string[]>([]);
-    const [isSliderOpen, sliderSwitch] = useState<boolean>(false);
+    const [flagSliderOpen, sliderSwitch] = useState<boolean>(false);
 
     useEffect(() => {
         fetch(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)
@@ -127,7 +130,7 @@ const GamePage = () => {
         }
         )
         .then(() => {
-            fetch(`https://api.rawg.io/api/games/${id}/screenshots?page=1&page_size=3&key=${API_KEY}`)
+            fetch(`https://api.rawg.io/api/games/${id}/screenshots?key=${API_KEY}`)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -146,11 +149,22 @@ const GamePage = () => {
         const res = getUrl(screenGame);
         setUrls(res);
     }, [screenGame]);
-    console.log(game);
+    useEffect(() => {
+        const sliderElement = document.querySelector('.slider_container');
+        if(sliderElement) {
+            if(flagSliderOpen) {
+                sliderElement.classList.remove('slider_container_close');
+            } else {
+                sliderElement.classList.add('slider_container_close');
+            }
+        }
+    }, [flagSliderOpen]);
+
+    // console.log(game);
 
     return (
-        <section className='game_section'>
-            {isSliderOpen ? <Slider screens={screenGameUrl}/> : null}
+        <section className='game_section' onClick={(event) => flagSliderOpen ? sliderClose(event, sliderSwitch) : null}>
+            {screenGameUrl && flagSliderOpen ? <Slider screens={screenGameUrl}/> : null}
             <Container sx={{paddingTop: '100px', paddingLeft: '300px !important', backgroundImage: `${game.background_image}`}}>
                 <Typography
                 variant="caption" component="div" sx={{color: 'white', opacity: '.7', marginBottom: '15px'}}>
@@ -224,7 +238,7 @@ const GamePage = () => {
                         : flagDescrOpen || (fullDescr && fullDescr?.length < 350) ? fullDescr
                         : null}
                         <Button
-                        onClick={() => {setFlagDescrOpen(!flagDescrOpen);}}
+                        onClick={() => {flagDescrSwitch(!flagDescrOpen);}}
                         size='small' 
                         color='primary' 
                         className='read_more_btn'
@@ -334,15 +348,22 @@ const GamePage = () => {
                     <Grid item xs={8} className='grid_item_video' >
                         {game && game.clip ? <YouTube videoId={game.clip.video}/> : null}
                     </Grid>
-                    {screenGameUrl.map((url, index) => 
-                        <Grid item className='grid_item_img' xs={5} sx={{width: '105px', height: '185px'}} key={index} >
-                            <img src={url} className='screen_image' onClick={() => sliderSwitch(true)}/>
-                        </Grid>
-                    )
+                    {
+                        screenGameUrl.map((url, index) => 
+                                {
+                                if(index < 3) {
+                                    return <Grid item className='grid_item_img' xs={5} sx={{width: '105px', height: '185px'}} key={index} >
+                                        <img src={url} className='screen_image'/>
+                                    </Grid>;
+                                } else {
+                                    return null;
+                                }
+                            }
+                        )
                     }
                     {screenGame && screenGame.length > 0 &&
                         <Grid item className='grid_item_img' xs={5} sx={{width: '105px', height: '185px'}} key={3} >
-                            <Button variant="contained" className='screen_btn'>
+                            <Button variant="contained" className='screen_btn' onClick={() => sliderSwitch(!flagSliderOpen)}>
                                 <img src={screenGameUrl[2]} className='screen_image screen_image_btn'/>
                                 <Typography variant="body1" className='view_all' component="span" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                                 View all
@@ -357,73 +378,75 @@ const GamePage = () => {
                         
                     </Grid>
                     {game && game.stores && game.stores.map((item: IStoreObj) => {
-                            switch(item.store.name) {
-                                case 'GOG' :
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                            <Button variant="contained" color='secondary' className='screen_btn'>
-                                                GOG
-                                                <img src={gog} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
-                                            </Button>
-                                        </Link>
-                                    </Grid>;
-                                case 'Epic Games' :
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                            <Button variant="contained" color='secondary' className='screen_btn'>
-                                                Epic Games
-                                                <img src={epicGames} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
-                                            </Button>
-                                        </Link>
-                                    </Grid>;
-                                case 'Steam' :
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                            <Button variant="contained" color='secondary' className='screen_btn'>
-                                                Steam
-                                                <FontAwesomeIcon className='icon_store' icon={faSteam} style={{width: '2em'}}/>
-                                            </Button>
-                                        </Link>
-                                    </Grid>;
-                                case 'App Store':
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                            <Button variant="contained" color='secondary' className='screen_btn'>
-                                                App Store
-                                                <FontAwesomeIcon className='icon_store' icon={faAppStore} style={{width: '2em'}}/>
-                                            </Button>
-                                        </Link>
-                                    </Grid>;
-                                case 'Nintendo Store': 
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                                <Button variant="contained" color='secondary' className='screen_btn'>
-                                                    Nintendo Store
-                                                    <img src={nintendoStore} alt="nintendo store" className='icon_store' style={{width: '30px', height: '30px', color: 'black'}}/>
-                                                </Button>
-                                        </Link>
-                                        </Grid>;
-                                case 'Xbox Store': 
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                                <Button variant="contained" color='secondary' className='screen_btn'>
-                                                    Xbox Store
-                                                    <FontAwesomeIcon className='icon_store' icon={faXbox} style={{width: '2em'}}/>
-                                                </Button>
-                                        </Link>
-                                        </Grid>;
-                                case 'PlayStation Store': 
-                                    return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                                        <Link target="_blank" rel="noopener" href={item.url}>
-                                                <Button variant="contained" color='secondary' className='screen_btn'>
-                                                    Playstation Store
-                                                    <FontAwesomeIcon className='icon_store' icon={faPlaystation} style={{width: '2em'}}/>
-                                                </Button>
-                                        </Link>
-                                        </Grid>;
-                                default: 
-                                return null;
-                            }
+                        // console.log(item);
+                        <SwitchStore name={item.store.name} url={item.url}/>;
+                            // switch(item.store.name) {
+                            //     case 'GOG' :
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                     GOG
+                            //                     <img src={gog} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
+                            //                 </Button>
+                            //             </Link>
+                            //         </Grid>;
+                            //     case 'Epic Games' :
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                     Epic Games
+                            //                     <img src={epicGames} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
+                            //                 </Button>
+                            //             </Link>
+                            //         </Grid>;
+                            //     case 'Steam' :
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                     Steam
+                            //                     <FontAwesomeIcon className='icon_store' icon={faSteam} style={{width: '2em'}}/>
+                            //                 </Button>
+                            //             </Link>
+                            //         </Grid>;
+                            //     case 'App Store':
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                     App Store
+                            //                     <FontAwesomeIcon className='icon_store' icon={faAppStore} style={{width: '2em'}}/>
+                            //                 </Button>
+                            //             </Link>
+                            //         </Grid>;
+                            //     case 'Nintendo Store': 
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                     <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                         Nintendo Store
+                            //                         <img src={nintendoStore} alt="nintendo store" className='icon_store' style={{width: '30px', height: '30px', color: 'black'}}/>
+                            //                     </Button>
+                            //             </Link>
+                            //             </Grid>;
+                            //     case 'Xbox Store': 
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                     <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                         Xbox Store
+                            //                         <FontAwesomeIcon className='icon_store' icon={faXbox} style={{width: '2em'}}/>
+                            //                     </Button>
+                            //             </Link>
+                            //             </Grid>;
+                            //     case 'PlayStation Store': 
+                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
+                            //             <Link target="_blank" rel="noopener" href={item.url}>
+                            //                     <Button variant="contained" color='secondary' className='screen_btn'>
+                            //                         Playstation Store
+                            //                         <FontAwesomeIcon className='icon_store' icon={faPlaystation} style={{width: '2em'}}/>
+                            //                     </Button>
+                            //             </Link>
+                            //             </Grid>;
+                            //     default: 
+                            //     return null;
+                            // }
                         })}
                 </Grid>
             </Container>
