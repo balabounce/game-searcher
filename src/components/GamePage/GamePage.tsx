@@ -19,7 +19,9 @@ import epicGames from './epic-games.svg';
 import nintendoStore from './nintendo-switch.png';
 import { IPlatform, IScreen, IStoreObj } from "./interfaces";
 import { Slider } from "../Slider/Slider.component";
-import { SwitchStore } from "./SwitchStore.component";
+import SwitchStore  from "./SwitchStore.component";
+import InfoGrid from "./InfoGrid.component";
+import { formReleaseDate } from "../../functions/formDate";
 
 const ratingText = (rate: string) => {
     return rate[0].toUpperCase() + rate.slice(1);
@@ -40,36 +42,6 @@ const ratingIcon = (rate: string) => {
     }
 };
 
-const formReleaseDate = (date: string) => {
-    const month = +date.slice(5,7) - 1;
-    const year = date.slice(0,4);
-    const day = date.slice(8, 10);
-    const monthNames = [
-        "Jan", "Feb", "Mar",
-        "Apr", "May", "Jun", "Jul",
-        "Aug", "Sep", "Oct",
-        "Nov", "Dec"
-    ];
-    const result =  `${monthNames[month].toUpperCase()} ${day}, ${year}`;
-    return result;
-    
-};
-
-
-const writeInfo = (arr: any[] | undefined, about: string) => {
-    const result: string|null[] = [];
-    arr?.map(item => {
-        let name;
-        if(about === 'platforms') {
-            name = item.platform.name;
-        } else {
-            name = item.name;
-        }
-        result.push(name);
-    });
-
-    return result.join(', ');
-};
 
 const getUrl = (screens: IScreen[] | undefined) => {
     const screenArr: string[]  = [];
@@ -248,100 +220,7 @@ const GamePage = () => {
                         </Button>
                     </Typography>
                 </Container>
-                <Grid container spacing={2} ml={0}>
-                    <Grid item className='grid_item' xs={4}>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Platforms
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.platforms ? writeInfo(game.platforms, 'platforms') : null}
-                            </Typography>
-                        </Container>
-                    </Grid>
-                    <Grid item xs={6} className='grid_item'>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Genre
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.genres ? writeInfo(game.genres, 'genres') : null}
-                            </Typography>
-                        </Container>
-                    </Grid>
-                    <Grid item xs={4} className='grid_item'>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Release Date
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.released ? formReleaseDate(game.released) : 'TBA'}
-                            </Typography>
-                        </Container>
-                    </Grid>
-                    <Grid item xs={6} className='grid_item'>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Developer
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.developers ? writeInfo(game.developers, 'developers') : null}
-                            </Typography>
-                        </Container>
-                    </Grid>   
-                    <Grid item  className='grid_item' xs={4}>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Publisher
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.publishers ? writeInfo(game.publishers, 'publishers') : null}
-                            </Typography>
-                        </Container>
-                    </Grid>  
-                    <Grid item xs={6} className='grid_item'>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Age rating
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.esrb_rating ? game.esrb_rating.name : 'Not rated yet'}
-                            </Typography>
-                        </Container>
-                    </Grid>  
-                    <Grid item xs={8} className='grid_item'>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Tags
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.tags ? writeInfo(game.tags, 'tags') : '-'}
-                            </Typography>
-                        </Container>
-                    </Grid>
-                    <Grid item xs={8} className='grid_item' sx={{marginLeft : '0px !important'}}>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                Website
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.website ? 
-                                <Link href={game.website} color='secondary' sx={{cursor: 'pointer'}}>{game.website}</Link>
-                                : '-'}
-                            </Typography>
-                        </Container>
-                    </Grid>
-                    <Grid item xs={8} className='grid_item' sx={{marginLeft : '0px !important'}}>
-                        <Container className='grid_container'>
-                            <Typography variant="h5" component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
-                                System Requirements
-                            </Typography>
-                            <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                                {game && game.platform ? writeInfo(game.platforms, 'publishers') : null}
-                            </Typography>
-                        </Container>
-                    </Grid>                            
-                </Grid>
+                <InfoGrid game={game}/>
             </Container>
             <Container> 
                 <Grid container rowSpacing={1} columnSpacing={1} ml={0} mt={11} className='grid_container_vidscr' >
@@ -375,79 +254,8 @@ const GamePage = () => {
                         <Typography variant="h5" className='view_all' component="h5" color='secondary' sx={{opacity: '.5', marginRight: '5px', marginBottom:'5px'}}>
                             Where To Buy
                         </Typography>
-                        
                     </Grid>
-                    {game && game.stores && game.stores.map((item: IStoreObj) => {
-                        // console.log(item);
-                        <SwitchStore name={item.store.name} url={item.url}/>;
-                            // switch(item.store.name) {
-                            //     case 'GOG' :
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                     GOG
-                            //                     <img src={gog} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
-                            //                 </Button>
-                            //             </Link>
-                            //         </Grid>;
-                            //     case 'Epic Games' :
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                     Epic Games
-                            //                     <img src={epicGames} alt="gog" className='icon_store' style={{width: '40px', height: '50px'}}/>
-                            //                 </Button>
-                            //             </Link>
-                            //         </Grid>;
-                            //     case 'Steam' :
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                     Steam
-                            //                     <FontAwesomeIcon className='icon_store' icon={faSteam} style={{width: '2em'}}/>
-                            //                 </Button>
-                            //             </Link>
-                            //         </Grid>;
-                            //     case 'App Store':
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                 <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                     App Store
-                            //                     <FontAwesomeIcon className='icon_store' icon={faAppStore} style={{width: '2em'}}/>
-                            //                 </Button>
-                            //             </Link>
-                            //         </Grid>;
-                            //     case 'Nintendo Store': 
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                     <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                         Nintendo Store
-                            //                         <img src={nintendoStore} alt="nintendo store" className='icon_store' style={{width: '30px', height: '30px', color: 'black'}}/>
-                            //                     </Button>
-                            //             </Link>
-                            //             </Grid>;
-                            //     case 'Xbox Store': 
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                     <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                         Xbox Store
-                            //                         <FontAwesomeIcon className='icon_store' icon={faXbox} style={{width: '2em'}}/>
-                            //                     </Button>
-                            //             </Link>
-                            //             </Grid>;
-                            //     case 'PlayStation Store': 
-                            //         return  <Grid item  className='grid_item' xs={4} sx={{paddingLeft: '8px !important', height: '60px'}}>
-                            //             <Link target="_blank" rel="noopener" href={item.url}>
-                            //                     <Button variant="contained" color='secondary' className='screen_btn'>
-                            //                         Playstation Store
-                            //                         <FontAwesomeIcon className='icon_store' icon={faPlaystation} style={{width: '2em'}}/>
-                            //                     </Button>
-                            //             </Link>
-                            //             </Grid>;
-                            //     default: 
-                            //     return null;
-                            // }
-                        })}
+                    {game && game.stores && game.stores.map((item: IStoreObj) => <SwitchStore name={item.store.name} url={item.url}/>)}
                 </Grid>
             </Container>
         </section>
