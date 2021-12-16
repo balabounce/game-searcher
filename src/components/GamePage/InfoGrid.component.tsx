@@ -2,6 +2,36 @@ import React from "react";
 import { Container, Grid, Link, Typography } from "@mui/material";
 import { formReleaseDate } from "../../functions/formDate";
 
+interface IRequire {
+    minimum?: string,
+    recommended: string
+}
+
+const writeSysReq = (platformsArr: any[]) => {
+    let node: JSX.Element|null = null;
+    platformsArr.map((platform, i) => {
+        if(platform.platform.name === 'PC' && platform.requirements) {
+            const minArr = platform.requirements.minimum ? platform.requirements.minimum.split('\n').splice(1) : null;
+            const recArr = platform.requirements.recommended ? platform.requirements.recommended.split('\n').splice(1) : null; 
+            console.log(minArr);
+            node = (
+                <div key={i}>
+                    {}
+                    <strong>Minimum:</strong>
+                    <ul>
+                        {minArr ? minArr.map((rec: string) => <li>{rec}</li>) : 'Not published yet'}
+                    </ul>
+                    <strong>Recommended:</strong>
+                    <ul>
+                        {recArr ? recArr.map((rec: string) => <li>{rec}</li>) : 'Not published yet'}
+                    </ul>
+                </div>
+            );
+        } 
+    });
+    return node;
+};
+
 const writeInfo = (arr: any[] | undefined, about: string) => {
     const result: string|null[] = [];
     arr?.map(item => {
@@ -19,6 +49,7 @@ const writeInfo = (arr: any[] | undefined, about: string) => {
 
 
 const InfoGrid: React.FC<{game: any|undefined}> = ({game}): JSX.Element => {
+    console.log(game);
     return (<> 
         <Grid container spacing={2} ml={0}>
                 <Grid item className='grid_item' xs={4}>
@@ -109,7 +140,7 @@ const InfoGrid: React.FC<{game: any|undefined}> = ({game}): JSX.Element => {
                             System Requirements
                         </Typography>
                         <Typography variant="body1" className='grid_body' component="span" color='secondary'>
-                            {game && game.platform ? writeInfo(game.platforms, 'publishers') : null}
+                            {game && game.platforms ? writeSysReq(game.platforms) : null}
                         </Typography>
                     </Container>
                 </Grid>                            
