@@ -1,20 +1,43 @@
 import { API_KEY } from "../App";
-import gamesCounter from "../functions/gamesCounter";
 
-const searchGame = (pageNum: number, setGames: React.Dispatch<React.SetStateAction<never[]>>, setCount: React.Dispatch<React.SetStateAction<number>>, input: string):void => {
-    let resultArr;
-    gamesCounter('', '', setCount, `https://api.rawg.io/api/games?search=${input}&key=${API_KEY}`);
-    fetch(`https://api.rawg.io/api/games?rating_top&dates=2020-01-01,2020-12-31&page=${pageNum}&key=${API_KEY}`)
-    .then(res => res.json())
-    .then(
-    (result) => {
-        resultArr = result.results ;
-        setGames(resultArr);
-    },
-    (error) => {
-        console.log(error);
-    }
-    );
+interface Iplatform {
+    id: number,
+    name: string,
+    slug: string
+}
+
+interface IfoundGames {
+    image: string,
+    name: string,
+    platforms: Iplatform[]
+}
+
+const searchGame = (input: string):Promise<any> => {
+    let resultArr:any[] = [];
+    //gamesCounter('', '', setCount, `https://api.rawg.io/api/games?search=${input}&key=${API_KEY}`);
+        return fetch(`https://api.rawg.io/api/games?search=${input}&key=${API_KEY}`)
+            .then(res => res.json())
+            .then(
+            (result) => {
+                if(input.length >= 3) {
+                    resultArr = result.results;
+                    const foundGamesArr:IfoundGames[] = [];
+                    let gameObj: IfoundGames = {} as IfoundGames;
+                    resultArr.forEach((game) => {
+                        gameObj.image = game.background_image;
+                        gameObj.name = game.name;
+                        gameObj.platforms = game.parent_platforms;
+                        foundGamesArr.push(gameObj);
+                        gameObj = {} as IfoundGames;
+                    });
+                    return foundGamesArr;
+                } else return null;
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
+
 };
 
 export default searchGame;

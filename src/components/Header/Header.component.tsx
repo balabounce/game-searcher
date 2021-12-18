@@ -13,9 +13,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar } from '@mui/material';
-import  userLocalCheck  from '../../functions/userLocalCheck';
+import userLocalCheck from '../../functions/userLocalCheck';
+import searchGame from '../../api/searchGames';
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,175 +63,194 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const PrimarySearchAppBar: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
-  
-  // const { user, isAuthenticated, isLoading} = useAuth0();
-	const user =  userLocalCheck();
-  const { loginWithRedirect, logout } = useAuth0();
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [foundGames, setFoundgames] = React.useState<any[]>([]);
 
-  // if(isAuthenticated) console.log(user);
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    React.useEffect(() => {
+        console.log(foundGames);
+    }, [foundGames]);
 
-  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    // const { user, isAuthenticated, isLoading} = useAuth0();
+      const user =  userLocalCheck();
+    const { loginWithRedirect, logout } = useAuth0();
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+    // if(isAuthenticated) console.log(user);
+    const isMenuOpen = Boolean(anchorEl);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget);
+    };
 
-  // const handleLogout = () => {
+    const handleMobileMenuClose = () => {
+      setMobileMoreAnchorEl(null);
+    };
 
-  // }
+    const handleMenuClose = () => {
+      setAnchorEl(null);
+      handleMobileMenuClose();
+    };
+
+    const menuItemArr = [ <MenuItem onClick={handleMenuClose} key={1}>Profile</MenuItem>,
+      <MenuItem onClick={() => {
+      localStorage.removeItem('user');
+      logout({ returnTo: window.location.origin });
+    }} key={2}>Logout</MenuItem>];
 
 
-  const menuItemArr = [ <MenuItem onClick={handleMenuClose} key={1}>Profile</MenuItem>,
-	<MenuItem onClick={() => {
-    localStorage.removeItem('user');
-    logout({ returnTo: window.location.origin });
-  }} key={2}>Logout</MenuItem>];
+    const menuId = 'primary-search-account-menu';
+    const renderMenu = (
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        sx={{marginTop:'60px'}}
+      >
+          {user ?
+            menuItemArr.map(menuItem => {
+              return menuItem;
+            })
+          : <MenuItem onClick={loginWithRedirect}>Login</MenuItem>}
+      </Menu>
+    );
 
-
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-      sx={{marginTop:'60px'}}
-    >
-        {user ?
-          menuItemArr.map(menuItem => {
-            return menuItem;
-          })
-        : <MenuItem onClick={loginWithRedirect}>Login</MenuItem>}
-    </Menu>
-  );
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-		horizontal: 'right',
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-        {
-          user ? <Avatar alt="User" src={user?.picture}/>  : <AccountCircle /> 
-        }
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
-
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar sx={{ boxShadow:"none", paddingTop: '20px', paddingLeft: '20px', paddingRight: '20px'}}>
-        <Toolbar  className='toolbar' sx={{paddingLeft: '20px !important'}}>
-          <Typography
-            variant="h6"
-            noWrap
-            component="h1"
-            sx={{ display: { xs: 'none', sm: 'block' }, fontFamily: 'Zen Tokyo Zoo', }}
+    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const renderMobileMenu = (
+      <Menu
+        anchorEl={mobileMoreAnchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        id={mobileMenuId}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={isMobileMenuOpen}
+        onClose={handleMobileMenuClose}
+      >
+        <MenuItem>
+          <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <Badge badgeContent={4} color="error">
+              <MailIcon />
+            </Badge>
+          </IconButton>
+          <p>Messages</p>
+        </MenuItem>
+        <MenuItem>
+          <IconButton
+            size="large"
+            aria-label="show 17 new notifications"
+            color="inherit"
           >
-            G.S.
-          </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-				placeholder="Search games…"
-				inputProps={{ 'aria-label': 'search' }}
-				fullWidth={true}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-            <Typography
-                variant="h6"
-                noWrap
-                component="h2"
-                sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '18px', marginRight: '10px' }}
-            >
-                {user ?  `${user.name}` : 'Hello, anon :3'}
-            </Typography>
+            <Badge badgeContent={17} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+          <p>Notifications</p>
+        </MenuItem>
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+          {
+            user ? <Avatar alt="User" src={user?.picture}/>  : <AccountCircle /> 
+          }
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      </Menu>
+    );
 
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
+    return (
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar sx={{ boxShadow:"none", paddingTop: '20px', paddingLeft: '20px', paddingRight: '20px'}}>
+          <Toolbar  className='toolbar' sx={{paddingLeft: '20px !important'}}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="h1"
+              sx={{ display: { xs: 'none', sm: 'block' }, fontFamily: 'Zen Tokyo Zoo', }}
             >
-				{
-					user ? <Avatar alt="UserPic" src={user?.picture}/>  : <AccountCircle /> 
-				}            
-			</IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {/* {renderMobileMenu} */}
-      {renderMenu}
-    </Box>
-  );
+              G.S.
+            </Typography>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search games…"
+                inputProps={{ 'aria-label': 'search' }}
+                fullWidth={true}
+                onChange={async (e) => {
+                      searchGame(e.target.value).then((res) => setFoundgames(res));
+                    }
+                }
+              />
+                <List component='nav'>
+        {foundGames ? foundGames.map((game, i) => {
+            if(i > 5) {
+                return (
+                    <ListItemButton sx={{height: 'fit-content', maxHeight: '50vh'}}>
+                        <ListItemIcon sx={{height: '70px'}}>
+                            <img src={game.image}/>
+                        </ListItemIcon>
+                        <ListItemText primary={game.name}/>
+                    </ListItemButton>
+                );
+            } else return null;
+            
+        }) : null} 
+                </List>
+            </Search>
+            <Box sx={{ flexGrow: 1 }} />
+              <Typography
+                  variant="h6"
+                  noWrap
+                  component="h2"
+                  sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '18px', marginRight: '10px' }}
+              >
+                  {user ?  `${user.name}` : 'Hello, anon :3'}
+              </Typography>
+
+            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                  {
+                      user ? <Avatar alt="UserPic" src={user?.picture}/>  : <AccountCircle /> 
+                  }            
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        {/* {renderMobileMenu} */}
+        {renderMenu}
+      </Box>
+    );
 };
 
 export default PrimarySearchAppBar;
