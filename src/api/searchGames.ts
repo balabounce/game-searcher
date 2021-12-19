@@ -7,6 +7,7 @@ interface Iplatform {
 }
 
 interface IfoundGames {
+    id: number,
     image: string,
     name: string,
     platforms: Iplatform[]
@@ -24,8 +25,10 @@ const searchGame = (input: string):Promise<any> => {
                     const foundGamesArr:IfoundGames[] = [];
                     let gameObj: IfoundGames = {} as IfoundGames;
                     resultArr.forEach((game) => {
+                        console.log(game);
                         gameObj.image = game.background_image;
                         gameObj.name = game.name;
+                        gameObj.id = game.id;
                         gameObj.platforms = game.parent_platforms;
                         foundGamesArr.push(gameObj);
                         gameObj = {} as IfoundGames;

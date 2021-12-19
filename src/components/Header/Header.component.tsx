@@ -17,6 +17,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Link } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar } from '@mui/material';
 import userLocalCheck from '../../functions/userLocalCheck';
@@ -200,23 +201,24 @@ const PrimarySearchAppBar: React.FC = () => {
                 inputProps={{ 'aria-label': 'search' }}
                 fullWidth={true}
                 onChange={async (e) => {
-                      searchGame(e.target.value).then((res) => setFoundgames(res));
+                        e.target.value.length > 0 ? searchGame(e.target.value).then((res) => setFoundgames(res)) : setFoundgames([]);
                     }
                 }
               />
-                <List component='nav'>
-        {foundGames ? foundGames.map((game, i) => {
-            if(i > 5) {
-                return (
-                    <ListItemButton sx={{height: 'fit-content', maxHeight: '50vh'}}>
-                        <ListItemIcon sx={{height: '70px'}}>
-                            <img src={game.image}/>
-                        </ListItemIcon>
-                        <ListItemText primary={game.name}/>
-                    </ListItemButton>
-                );
-            } else return null;
-            
+              <List component='nav' sx={{position: 'absolute', backgroundColor: 'white', width:'100%', padding: '0px'}}>
+                {foundGames ? foundGames.map((game, i) => {
+                    if(i < 5) {
+                        return (
+                            <Link href={`/games/${game.id}/${game.name.replace(/ /g, '-').replace(/\/|:|/g, '').replace(/--+/g,'-').toLowerCase()}`} sx={{textDecoration: 'none'}}> 
+                               <ListItemButton sx={{display: 'flex', justifyContent: 'space-between', height: 'fit-content', maxHeight: '50vh'}} >
+                                    <ListItemIcon sx={{height: '47px', width: '36px', marginRight: '20px'}}>
+                                        <img src={game.image} style={{height: '100%', width: '100%'}}/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={game.name} sx={{width: 'fit-content'}}/>
+                               </ListItemButton>
+                             </Link>
+                        );
+                    } else return null;
         }) : null} 
                 </List>
             </Search>
